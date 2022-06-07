@@ -120,7 +120,7 @@ class AddressBook(UserDict):
     def iterator(self, days=0):
         index, print_block = 1, '-' * 50 + '\n'
         for record in self.data.values():
-            if days == 0 or record.days_to_birthday(record.birthday) <= days:
+            if days == 0 or (record.birthday.value is not None and record.days_to_birthday(record.birthday) <= days):
                 print_block += str(record) + '\n'
                 if index < N:
                     index += 1
@@ -221,6 +221,8 @@ def add_birthday(contacts, *args):
 @InputError
 def days_to_user_birthday(contacts, *args):
     name = args[0]
+    if contacts[name].birthday.value is None:
+        return 'User has no birthday'
     return f'{contacts[name].days_to_birthday(contacts[name].birthday)} days to user {name} birthday'
 
 
