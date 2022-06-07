@@ -6,7 +6,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/VlodyaKr/Python-6-Core-HomeWork-11?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/VlodyaKr/Python-6-Core-HomeWork-11?color=blue&style=plastic)
 ![GitHub repo size](https://img.shields.io/github/repo-size/VlodyaKr/Python-6-Core-HomeWork-11?style=plastic)
-![GitHub all releases](https://img.shields.io/github/downloads/VlodyaKr/Python-6-Core-HomeWork-11/total?color=cyan&style=plastic)
+![GitHub all releases](https://img.shields.io/github/downloads/VlodyaKr/Python-6-Core-HomeWork-11/total?color=blue&style=plastic)
 [![GitHub issues](https://img.shields.io/github/issues/VlodyaKr/Python-6-Core-HomeWork-11?style=plastic)](https://github.com/VlodyaKr/Python-6-Core-HomeWork-11/issues)
 [![GitHub forks](https://img.shields.io/github/forks/VlodyaKr/Python-6-Core-HomeWork-11?style=plastic)](https://github.com/VlodyaKr/Python-6-Core-HomeWork-11/network)
 [![GitHub stars](https://img.shields.io/github/stars/VlodyaKr/Python-6-Core-HomeWork-11?style=plastic)](https://github.com/VlodyaKr/Python-6-Core-HomeWork-11/stargazers)
@@ -62,6 +62,17 @@ ___
 Клас `Name` - обов'язкове поле з ім'ям.
 
 Клас `Phone`, необов'язкове поле з телефоном і один запис (`Record`) може містити кілька.
+
+На третьому етапі:
+
+Додаємо поле для дня народження `Birthday`. Це поле не обов'язкове, але може бути лише одне.
+
+Додаємо функціонал роботи з `Birthday` до класу `Record`, а саме функцію `days_to_birthday`, яка повертає кількість днів до наступного дня народження.
+
+Додаємо функціонал перевірки правильність наведених значень для полів `Phone`, `Birthday`.
+
+Додаємо пагінацію (посторінкове виведення) `AddressBook` для ситуацій, коли книга дуже велика і треба показати вміст частинами, а не все відразу. Реалізуємо це через створення ітератора за записами.
+
 ___
 #### Автор
 [![GitHub Contributors Image](https://contrib.rocks/image?repo=VlodyaKr/Python-6-Core-HomeWork-11)](https://github.com/VlodyaKr)
