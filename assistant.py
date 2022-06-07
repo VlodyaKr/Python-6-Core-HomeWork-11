@@ -8,21 +8,9 @@ N = 3   # кількість записів для представлення т
 
 
 class Field:
-    def __init__(self, value) -> None:
+    def __init__(self, value: str) -> None:
         self.__value = None
         self.value = value
-
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
-    def value(self, value):
-        validated_value = self.validate(value)
-        if validated_value is None and isinstance(self, Phone):
-            raise ValueError(f'Невірний тип значення {value}')
-        else:
-            self.__value = validated_value
 
     def __str__(self) -> str:
         return f'{self.value}'
@@ -30,49 +18,41 @@ class Field:
     def __eq__(self, other) -> bool:
         return self.value == other.value
 
-    def validate(self, value) -> str:
-        if isinstance(self, Phone):
-            return self.validate_phone(value)
-        elif isinstance(self, Birthday):
-            return self.validate_birthday(value)
-        else:
-            return value
 
-    def validate_phone(self, value: str) -> str:
-        def is_code_valid(phone_code):
+class Name(Field):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        self.__value = value
+
+
+class Phone(Field):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        def is_code_valid(phone_code: str) -> bool:
             if phone_code[:2] in ('03', '04', '05', '06', '09') and phone_code[2] != '0' and phone_code != '039':
                 return True
             return False
 
+        result = None
         phone = value.removeprefix('+').replace('(', '').replace(')', '').replace('-', '')
-        if not phone.isdigit():
-            return None
-        if phone.startswith('0') and len(phone) == 10 and is_code_valid(phone[:3]):
-            return '+38' + phone
-        if phone.startswith('380') and len(phone) == 12 and is_code_valid(phone[2:5]):
-            return '+' + phone
-        if 10 <= len(phone) <= 14 and not phone.startswith('0') and not phone.startswith('380'):
-            return '+' + phone
-        return None
-
-    def validate_birthday(self, value: str) -> date:
-        if value is None:
-            return None
-        try:
-            return datetime.datetime.strptime(value, '%Y-%m-%d').date()
-        except ValueError:
-            try:
-                return datetime.datetime.strptime(value, '%d.%m.%Y').date()
-            except ValueError:
-                raise DateIsNotValid
-
-
-class Name(Field):
-    pass
-
-
-class Phone(Field):
-    pass
+        if phone.isdigit():
+            if phone.startswith('0') and len(phone) == 10 and is_code_valid(phone[:3]):
+                result = '+38' + phone
+            if phone.startswith('380') and len(phone) == 12 and is_code_valid(phone[2:5]):
+                result = '+' + phone
+            if 10 <= len(phone) <= 14 and not phone.startswith('0') and not phone.startswith('380'):
+                result = '+' + phone
+        if result is None:
+            raise ValueError(f'Невірний тип значення {value}')
+        self.__value = result
 
 
 class Birthday(Field):
@@ -81,6 +61,23 @@ class Birthday(Field):
             return 'Unknown'
         else:
             return f'{self.value:%d %b %Y}'
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value: str):
+        if value is None:
+            self.__value = None
+        else:
+            try:
+                self.__value = datetime.datetime.strptime(value, '%Y-%m-%d').date()
+            except ValueError:
+                try:
+                    self.__value = datetime.datetime.strptime(value, '%d.%m.%Y').date()
+                except ValueError:
+                    raise DateIsNotValid
 
 
 class Record:
@@ -135,7 +132,7 @@ class PhoneUserAlreadyExists(Exception):
 
 
 class DateIsNotValid(Exception):
-    pass
+    """You cannot add an invalid date"""
 
 
 class InputError:
@@ -172,7 +169,7 @@ def add_contact(contacts, *args):
             contacts[name.value].add_phone(phone)
             return f'Add phone {phone} to user {name}'
     else:
-        if len(args) >2:
+        if len(args) > 2:
             birthday = Birthday(args[2])
         else:
             birthday = Birthday(None)
@@ -215,7 +212,7 @@ def show_all(contacts, *args):
 def add_birthday(contacts, *args):
     name, birthday = args[0], args[1]
     contacts[name].birthday = Birthday(birthday)
-    return f'Add/modify birthday {birthday} to user {name}'
+    return f'Add/modify birthday {contacts[name].birthday} to user {name}'
 
 
 @InputError
@@ -266,7 +263,7 @@ def help_me(*args):
 COMMANDS = {salute: ['hello'], add_contact: ['add '], change_contact: ['change '], help_me: ['?', 'help'],
             show_all: ['show all'], goodbye: ['good bye', 'close', 'exit', '.'], del_phone: ['del '],
             add_birthday: ['birthday'], days_to_user_birthday: ['days to birthday '],
-            show_birthday: ['show birthday days '], show_phone: ['show '],}
+            show_birthday: ['show birthday days '], show_phone: ['show ']}
 
 
 def command_parser(user_command: str) -> (str, list):
